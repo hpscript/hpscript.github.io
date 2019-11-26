@@ -24,7 +24,7 @@ $ sudo mv server.crt /etc/httpd/conf/ssl.crt/
 ### ssl.conf編集 
 sudo vi /etc/httpd/conf.d/ssl.conf
 
-!# SSLCertificateFile /etc/pki/tls/certs/localhost.crt                             
-SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt 
-!# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key                        
+!# SSLCertificateFile /etc/pki/tls/certs/localhost.crt<br>                             
+SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt <br>
+!# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key<br>                        
 SSLCertificateKeyFile /etc/httpd/conf/ssl.key/server.key   

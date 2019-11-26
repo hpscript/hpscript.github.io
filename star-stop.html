@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>video</title>
+</head>
+<body>
+    Camera with mediaDevice.getMedia()
+    <button type="button" onClick="startVideo()">start</button>
+    <button type="button" onClick="stopVideo()">stop</button>
+    <br>
+    <video id="local_video" autoplay style="width: 320px; height: 240px; border: 1px solid black;" >
+
+    <script>
+    let localVideo = document.getElementById('local_video');
+    let localStream;
+
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+                            navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+    function startVideo(){
+      getDeviceStream({video: true, audio: false})
+      .then(function (stream){
+        localStream = stream;
+        localVideo.srcObject = stream;
+        playVideo(localVideo, stream);
+      }).catch(function(error){
+        console.error('getUserMedia error:', error);
+        return;
+      });
+    }
+
+    function stopVideo(){
+      pauseVideo(localVideo);
+      stopLocalStream(localStream);
+    }
+
+    function stopLocalStream(stream){
+      let tracks = stream.getTracks();
+      if (! tracks){
+        console.warn('no tracks');
+        return;
+      }
+
+      for (let track of tracks){
+        track.stop();
+      }      
+    }
+
+    function getDeviceStream(option){
+      if ('getUserMedia' in navigator.mediaDevices){
+        console.log('navigator.mediaDevices.getUserMedia');
+        return navigator.mediaDevices.getUserMedia(option);
+      } else {
+        console.log('wrap navigator.getUserMedia with Promise');
+        return new Promise(function(resolve, reject){
+          navigator.getUserMedia(option,
+              resolve,
+              reject
+            );
+        });
+      }
+    }
+
+    function playVideo(element, stream){
+      if('srcObject' in element){
+        element.srcObject = stream;
+      } else {
+        element.src = window.URL.createObjectURL(stream);
+      }
+      element.play();
+      element.volume = 0;
+    }
+
+    function pauseVideo(element){
+      element.pause();
+      if ('srcObject' in element){
+        element.srcObject = null;
+      } else {
+        if (element.src && (element.src !== '')){
+          window.URL.revokeObjectURL(element.src);
+        }
+        element.src = '';
+      }
+    }
+  </script>
+</body>
+</html>

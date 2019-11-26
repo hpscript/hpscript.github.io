@@ -28,3 +28,13 @@ sudo vi /etc/httpd/conf.d/ssl.conf
 SSLCertificateFile /etc/httpd/conf/ssl.crt/server.crt <br>
 !# SSLCertificateKeyFile /etc/pki/tls/private/localhost.key<br>                        
 SSLCertificateKeyFile /etc/httpd/conf/ssl.key/server.key   
+
+### apache 再起動
+$ sudo service httpd restart
+
+### composerでhttps用のphp buildin server libraryインストール
+$ curl -sS https://getcomposer.org/installer | php<br>
+$ php composer.phar require --dev mpyw/php-hyper-builtin-server:^2.0
+
+### httpsサーバー起動
+$ vendor/bin/hyper-run -s 192.168.33.10:8000

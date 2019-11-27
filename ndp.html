@@ -224,7 +224,7 @@
         console.error('peerConnection already exist!');
       }
       peerConnection = prepareNewConnection();
-      peerConnection.setRomoteDescription(sessionDescription)
+      peerConnection.setRemoteDescription(sessionDescription)
       .then(function(){
         console.log('setRomoteDescription(offer) success in promise');
         makeAnswer();

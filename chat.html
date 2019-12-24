@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>WebRTC</title>
+	<link rel="stylesheet" type="text/css" href="public/styles.css">
+	<script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+	<p><button id="takeProfilePicture" type="button" autofocus="true">Create Profile Picture</button></p>
+	<video id="videoTag" autoplay></video>
+	<div>
+		<label>Your Name</label><input id="myName" type="text">
+		<label>Message</label><input id="myMessage" type="text">
+		<input id="sendMessage" type="submit">
+		<div id="chatArea">Message: output:<br></div>
+	</div>
+
+	<script>
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia;
+		var constraints = {audio: false, video: {
+				mandatory: {
+					maxWidth: 240,
+					maxHeight: 240
+				}
+			}
+		};
+		var videoArea = document.querySelector("video");
+		var myName = document.querySelector("#myName");
+		var myMessage = document.querySelector("#myMessage");
+		var sendMessage = document.querySelector("#sendMessage");
+		var chatArea = document.querySelector("#chatArea");
+		var ROOM = "chat";
+
+		io = io.connect();
+		io.emit('ready', ROOM);
+
+		io.on('announce', function(data){
+			displayMessage(data.message);
+		});
+
+		io.on('message', function(data){
+			displayMessage(data.author + ": " + data.message);
+		});
+
+		sendMessage.addEventListener('click', function(ev){
+			io.emit('send', {"author":myName.value, "message":myMessage.value, "room":ROOM});
+			ev.preventDefault();
+		}, false);
+
+		function displayMessage(message){
+			chatArea.innerHTML = chatArea.innerHTML + "<br>" + message;
+		}
+
+		navigator.getUserMedia(constraints, onSuccess, onError);
+
+		function onSuccess(stream){
+			console.log("Success! we have a stream!");
+			// videoArea.src = window.URL.createObjectURL(stream);
+			// videoArea.className = "grayscale_filter";
+			videoArea.srcObject = stream;
+		}
+
+		function onError(error){
+			console.log("Error with getUserMedia: ", error);
+		}
+	</script>
+</body>
+</html>

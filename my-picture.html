@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>WebRTC</title>
+	<link rel="stylesheet" type="text/css" href="public/styles.css">
+</head>
+<body>
+	<p><button id="takeProfilePicture" type="button" autofocus="true">Create Profile Picture</button></p>
+	<video id="videoTag" autoplay></video>
+	<canvas id="profilePicCanvas" style="display: none;"></canvas>
+	<div>
+		<img id="profilePictureOutput">
+	</div>
+	<script>
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia;
+		var constraints = {audio: false, video: {
+				mandatory: {
+					maxWidth: 240,
+					maxHeight: 240
+				}
+			}
+		};
+		var videoArea = document.querySelector("video");
+		var profilePicCanvas = document.querySelector("#profilePicCanvas");
+		var profilePictureOutput = document.querySelector("#profilePictureOutput");
+		var takePicButton = document.querySelector("#takeProfilePicture");
+		var videoTag = document.querySelector("#videoTag");
+		var width = 240;
+		var height = 0;
+		var streaming = false;
+
+		takePicButton.addEventListener('click', function(ev){
+			takeProfilePic();
+			ev.preventDefault();
+		}, false);
+
+		videoTag.addEventListener('canplay', function(ev){
+			if(!streaming){
+				height = videoTag.videoHeight / (videoTag.videoWidth/width);
+				if (isNaN(height)){
+					height = width / (4/3);
+				}
+				videoTag.setAttribute('width', width);
+				videoTag.setAttribute('height', height);
+				profilePicCanvas.setAttribute('width', width);
+				profilePicCanvas.setAttribute('height', height);
+				streaming = true;
+			}
+		}, false);
+
+		function takeProfilePic(){
+			var context = profilePicCanvas.getContext('2d');
+			if (width && height){
+				profilePicCanvas.width = width;
+				profilePicCanvas.height = height;
+				context.drawImage(videoTag, 0, 0, width, height);
+
+				var data = profilePicCanvas.toDataURL('image/png');
+				profilePictureOutput.setAttribute('src', data);
+			}
+		}
+
+		navigator.getUserMedia(constraints, onSuccess, onError);
+
+		function onSuccess(stream){
+			console.log("Success! we have a stream!");
+			// videoArea.src = window.URL.createObjectURL(stream);
+			// videoArea.className = "grayscale_filter";
+			videoArea.srcObject = stream;
+		}
+
+		function onError(error){
+			console.log("Error with getUserMedia: ", error);
+		}
+	</script>
+</body>
+</html>

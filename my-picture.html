@@ -12,6 +12,9 @@
 	<div>
 		<img id="profilePictureOutput">
 	</div>
+	<div class="download" style="display: none;">
+		<a id="download" href="#" download="canvas.jpg">download</a>
+	</div>
 	<script>
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia;
 		var constraints = {audio: false, video: {
@@ -58,6 +61,8 @@
 
 				var data = profilePicCanvas.toDataURL('image/png');
 				profilePictureOutput.setAttribute('src', data);
+				document.querySelector(".download").style.display = "block";
+				document.getElementById("download").href = data;
 			}
 		}
 

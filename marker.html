@@ -1,18 +1,30 @@
-<!DOCTYPE html>
+<!doctype HTML>
 <html>
-    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
-    <!-- we import arjs version without NFT but with marker + location based support -->
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <body style="margin : 0px; overflow: hidden;">
-        <a-scene embedded arjs>
-        <a-marker preset="hiro">
-            <a-entity
-                      obj-model="obj: url(https://hpscript.github.io/rock/Rock1.obj); mtl: url(https://hpscript.github.io/rock/Rock1.mtl)"
-                      scale="0.02 0.02 0.02"
-                      rotation="-90 0 0"
-            ></a-entity>
-        </a-marker>
-        <a-entity camera></a-entity>
-        </a-scene>
-    </body>
+<!-- A-Frame ライブラリの読み込み -->
+<script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+<!-- AR.js ライブラリの読み込み -->
+<script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.0/aframe/build/aframe-ar.js"></script>
+<body style='margin:0px; overflow:hidden;'>
+<!-- こっからA-Frame -->
+<a-scene embedded arjs><!--="debugUIEnabled:false;trackingMethod:best;" vr-mode-ui="enabled: false"--->
+
+    <!-- こっからARの世界。マーカー上になにを展開するかを書く -->
+    <a-marker preset="hiro">
+        <!--objファイル: 形　mtlファイル: 表面　mtlなしでは透明になってしまう--->
+        <a-entity 
+            obj-model="obj: url(obj/plant.obj);
+        mtl: url(obj/plant.mtl)"
+            scale="0.02 0.02 0.02"
+            rotation="-90 0 0"
+        >
+        </a-entity>
+        <!--scale:サイズ　rotation: 角度 -90??-->
+             <a-text value="Cat AR by J" position="0 0.8 0" align="center"></a-text>
+    </a-marker>
+    <!-- arなのでカメラが必要 -->
+    <a-entity camera></a-entity>
+</a-scene>
+<!-- ここまででA-Frameおわり -->
+
+</body>
 </html>
